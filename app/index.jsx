@@ -1,6 +1,6 @@
 // File: app/index.jsx
-import { View, Text, Button } from "react-native";
 import { router } from "expo-router";
+import { Button, Text, View } from "react-native";
 
 export default function Home() {
   return (
@@ -13,6 +13,10 @@ export default function Home() {
       <Button
         title="Notes App"
         onPress={() => router.push("/services/notes")}
+      />
+      <Button
+        title="Login Screen"
+        onPress={() => router.push("/pages/LoginScreen")}
       />
     </View>
   );

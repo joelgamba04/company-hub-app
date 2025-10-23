@@ -1,12 +1,12 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from "react";
 import { getMe, loginWithEmail } from "../services/api";
+import { storage } from "../utils/storage";
 
 const AuthContext = createContext(null);
 
@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     (async () => {
       try {
-        const t = await AsyncStorage.getItem("session_token");
+        const t = await storage.getItem("session_token");
         if (t) {
           setToken(t);
           // Try loading the user
@@ -36,19 +36,30 @@ export function AuthProvider({ children }) {
       email,
       password,
     });
+
     setToken(newToken);
     setUser(me ?? null);
-    await AsyncStorage.setItem("session_token", newToken);
+    await storage.setItem("session_token", newToken);
   };
 
   const logout = async () => {
     setToken(null);
     setUser(null);
-    await AsyncStorage.removeItem("session_token");
+    await storage.removeItem("session_token");
+  };
+
+  const devBypass = async () => {
+    const fake = {
+      token: "dev-token",
+      user: { id: 1, email: "dev@example.com", name: "Dev User" },
+    };
+    setToken(fake.token);
+    setUser(fake.user);
+    await storage.setItem("session_token", fake.token);
   };
 
   const value = useMemo(
-    () => ({ token, user, loading, login, logout }),
+    () => ({ token, user, loading, login, logout, devBypass }),
     [token, user, loading]
   );
 

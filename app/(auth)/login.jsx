@@ -1,18 +1,18 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Pressable,
-    Text,
-    TextInput,
-    View,
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import { useAuth } from "../../src/context/AuthContext";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, devBypass } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,6 +32,11 @@ export default function LoginScreen() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const onDevBypass = async () => {
+    await devBypass();
+    router.replace("/(app)/dashboard");
   };
 
   return (
@@ -82,6 +87,19 @@ export default function LoginScreen() {
         ) : (
           <Text style={{ color: "white", fontWeight: "600" }}>Log In</Text>
         )}
+      </Pressable>
+
+      <Pressable
+        onPress={onDevBypass}
+        style={{
+          padding: 12,
+          borderRadius: 12,
+          alignItems: "center",
+          borderWidth: 1,
+          borderColor: "#aaa",
+        }}
+      >
+        <Text style={{ color: "#0ea5e9", fontWeight: "600" }}>Dev Bypass</Text>
       </Pressable>
     </View>
   );
